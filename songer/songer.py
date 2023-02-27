@@ -42,6 +42,9 @@ class Songer:
         song, sample_rate = librosa.load(self.mfiles_path / song_path)
         return song, sample_rate
 
+    def __getitem__(self, song_id):
+        return self.get_song(song_id)
+
     def get_index(self,):
         pass
 
