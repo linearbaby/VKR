@@ -1,0 +1,7 @@
+defaults:
+- _self_
+- model: local_model
+
+emb:
+- embeddings_type: local_files
+- embeddings_save_path: /tmp/embeddings/
