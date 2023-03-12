@@ -1,0 +1,5 @@
+# hydra managed project, outputs is log dir
+outputs
+
+# place for index placing after script execution
+data/index

@@ -1,3 +1,15 @@
-save_position: local
-save_path: /tmp/index/
+defaults:
+- _self_
+- index: IVFPQ
+
+memory_footprint_training: 100000  # how many bytes reserved for index training
+memory_footprint_populating: 0.5   
+index_dir: "data/index/"
+
+connector:
+  meta_path: "data/"
+  music_info_path: "music_info.csv"
+  music_embeddings_name: "music_embeddings"
+  music_location: "data/samples/"
+  batch_size: 1
 
