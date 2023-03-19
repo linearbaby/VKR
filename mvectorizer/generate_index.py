@@ -12,12 +12,12 @@ from omegaconf import DictConfig, OmegaConf
 def generate_index(cfg: DictConfig):
     # get training data with memory constraints
     cr = connector.SimpleDFConnector(
-        cfg.connector.meta_path,
-        cfg.connector.music_info_path,
-        cfg.connector.music_location,
+        data_path=cfg.connector.meta_path,
+        music_info_df_name=cfg.connector.music_info_df_name,
+        music_location=cfg.connector.music_location,
     )
-    cr.load_map(cfg.connector.music_embeddings_name)
-    emb_dataset = cr.get_embeddings_dataset(cfg.connector.music_embeddings_name)
+    cr.load_map(cfg.connector.emb_map_name)
+    emb_dataset = cr.get_embeddings_dataset(cfg.connector.emb_map_name)
     item = emb_dataset[0]  # (np.array, int64)
     memory_for_item = getsizeof(item[0]) + getsizeof(item[1])
     dim = item[0].shape[0]
@@ -29,7 +29,7 @@ def generate_index(cfg: DictConfig):
 
     emb_loader = torch.utils.data.DataLoader(
         emb_dataset,
-        batch_size=cfg.connector.batch_size,
+        batch_size=cfg.batch_size,
         shuffle=True,
     )
     embeddings = np.empty((0, cfg.index.dim))
@@ -58,8 +58,16 @@ def generate_index(cfg: DictConfig):
     index.populate_index(emb_populat_loader, cfg.index_dir, cfg.index.ivf)
 
     # test
+    print(cr._get_embedding(cfg.connector.emb_map_name, 0))
     q = index.FAISS(cfg.index_dir)
-    q.execute_query(np.array([[1, 2, 3]]), 1, 1)
+    query = q.execute_query(
+        cr._get_embedding(cfg.connector.emb_map_name, 0)[
+            np.newaxis,
+        ],
+        1,
+        1,
+    )
+    print(f"for first embedding found nearest neighbour: {query}")
 
 
 if __name__ == "__main__":

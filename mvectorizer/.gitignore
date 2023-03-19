@@ -2,4 +2,8 @@
 outputs
 
 # place for index placing after script execution
-data/index
+
+data/
+index/
+best_models
+.pytest_cache

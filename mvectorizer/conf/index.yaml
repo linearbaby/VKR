@@ -1,15 +1,18 @@
 defaults:
 - _self_
-- index: IVFPQ
+- index: FlatL2   
+- connector: simple_df_connector
+- override hydra/hydra_logging: disabled    # disaple output dir  
+- override hydra/job_logging: disabled     # disaple output dir  
+  
+# disaple output dir  
+hydra:  
+  output_subdir: null  
+  run:  
+    dir: .
 
-memory_footprint_training: 100000  # how many bytes reserved for index training
-memory_footprint_populating: 0.5   
-index_dir: "data/index/"
-
-connector:
-  meta_path: "data/"
-  music_info_path: "music_info.csv"
-  music_embeddings_name: "music_embeddings"
-  music_location: "data/samples/"
-  batch_size: 1
+memory_footprint_training: 10_000_000  # how many bytes reserved for index training
+memory_footprint_populating: 0.5 
+batch_size: 1  
+index_dir: "${hydra:runtime.cwd}/index/${now:%Y-%m-%d}"
 
