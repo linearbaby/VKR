@@ -26,12 +26,13 @@ class EmbeddedGTZANDataset(Dataset):
         self.y = self.le.fit_transform(labels)
         self.y = torch.tensor(self.y)
 
-        self.X = torch.tensor(
+        self.X = np.array(
             [
                 np.load(np_location / (file_name + ".npy"))
                 for file_name in music_info.tracks
             ]
         )
+        self.X = torch.tensor(self.X)
 
     def __getitem__(self, idx):
         return (self.X[idx], self.y[idx]), self.music_ids[idx]

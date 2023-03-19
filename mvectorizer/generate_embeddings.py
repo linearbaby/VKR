@@ -11,9 +11,7 @@ from pathlib import Path
 
 @hydra.main(version_base=None, config_path="conf", config_name="embeddings")
 def generate(cfg: DictConfig) -> None:
-    # model = get_model(cfg.model)
-    # get_embeddings(model, cfg.emb)
-    print(OmegaConf.to_yaml(cfg))
+    # print(OmegaConf.to_yaml(cfg))
 
     # check if embedder not persists on disk
     artifacts_load_path = Path(cfg.emb["artifacts_load_path"])

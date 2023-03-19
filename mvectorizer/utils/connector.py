@@ -21,10 +21,11 @@ class CallbackDataset(Dataset):
 class SimpleDFConnector:
     def __init__(self, data_path, music_location, music_info_df_name="music_info.csv"):
         """
-        data_path - путь к общей папке метаинформации
-        music_info_path - относительный пути от meta_path до инфо-дф о музыке формата
+        data_path - path to general location of meta information files
+            (in this particular setup meta information - music_info.csv, music_embeddings.csv)
+        music_location - path to all audio files
+        music_info_df_name - name of music info df located in data_path
             csv[song_id|tracks|paths], delim=","
-        music_location - путь к папке, в которой располагаются все музыкальные файлы
         """
         super().__init__()
         self.music_info_df_name = music_info_df_name
@@ -39,10 +40,14 @@ class SimpleDFConnector:
     def _get_song(self, idx):
         song_name = self.music_info.loc[idx].paths
         song, sample_rate = ls.load(Path(self.music_location) / song_name)
-        return song, idx
+        return song
 
     def get_songs_dataset(self):
-        return CallbackDataset(self._get_song, len(self.music_info))
+        return CallbackDataset(
+            # return not only song representation, but also idx
+            lambda idx: (self._get_song(idx), idx),
+            len(self.music_info),
+        )
 
     def get_avalilable_songs(self, music_indicies):
         return list(map(self._get_song, music_indicies))
