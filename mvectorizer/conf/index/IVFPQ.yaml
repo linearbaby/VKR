@@ -1,0 +1,7 @@
+dim: ???  # vectors dimensionality, deduced on runtime
+nlist: 20  # number of voronoi cells (centroids in index)
+m: 8  # number of subquantizers (number of vector partitions)
+nbits: 8  # each subvector encodes with nbits, bucketing
+probe: 1  # how many nearest centroids to take
+index_string: "IVF${index.nlist},PQ${index.m}x${index.nbits}"
+ivf: Yes

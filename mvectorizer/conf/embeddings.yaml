@@ -1,0 +1,24 @@
+defaults:
+- _self_
+- model: local_model 
+- connector: simple_df_connector
+- override hydra/hydra_logging: disabled  # disaple output dir
+- override hydra/job_logging: disabled  # disaple output dir  
+  
+# disaple output dir  
+hydra:  
+  output_subdir: null  
+  run:  
+    dir: .
+
+emb:
+  dataset_type: preprocessed # raw
+  train: True
+  load_model_date: "${now:%Y-%m-%d}"
+  artifacts_load_path: "${hydra:runtime.cwd}/best_models/${emb.load_model_date}"
+  embeddings_type: pandas.DataFrame
+  embeddings_location: local_files
+  embeddings_save_path: /tmp/embeddings/
+  batch_size: 16
+  epochs: 20
+  emb_dataset_location: "${hydra:runtime.cwd}/data/gtzan/"

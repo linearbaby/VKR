@@ -1,0 +1,4 @@
+meta_path: /home/artem/grad/mvectorizer/data/gtzan
+music_info_df_name: "music_info.csv"
+music_location: /home/artem/grad/mvectorizer/data/gtzan/samples
+emb_map_name: "embeddings"

@@ -1,0 +1,6 @@
+path: ???
+type: pytorch-Module
+input_dim: 4800
+embed_dim: 512
+output_dim: 10
+artifacts_path: "${hydra:runtime.cwd}/best_models/${now:%Y-%m-%d}"
