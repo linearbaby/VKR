@@ -39,7 +39,7 @@ def populate_index(data_iterable, index_dir, ivf):
         # construct the output index
         index = faiss.read_index(str(index_dir / "trained.index"))
         block_fnames = [
-            index_dir + f"block_{idx}.index" for idx in range(partition + 1)
+            str(index_dir / f"block_{idx}.index") for idx in range(partition + 1)
         ]
         merge_ondisk(index, block_fnames, str(index_dir / "merged_index.ivfdata"))
         faiss.write_index(index, str(index_dir / "populated.index"))

@@ -15,7 +15,7 @@ from pathlib import Path
             "k": 2,  # k nearest
             "nbits": 8,  # each subvector encodes with nbits, bucketing
             "probe": 1,  # how many nearest centroids to take
-            "index_string": "IVF20(PQ4x8),Flat",
+            "index_string": "IVF20,PQ4x8",
             "index_dir": "data/index1/",  # !!!!!!!!!!REQUIRED TRAILING SLASH
             "shape": (10000, 512),
         },
@@ -25,7 +25,7 @@ from pathlib import Path
             "k": 2,  # k nearest
             "nbits": 8,  # each subvector encodes with nbits, bucketing
             "probe": 1,  # how many nearest centroids to take
-            "index_string": "IVF10(PQ4x8),Flat",
+            "index_string": "IVF10,PQ4x8",
             "index_dir": "data/index2/",  # !!!!!!!!!!REQUIRED TRAILING SLASH
             "shape": (10240, 256),
         },
@@ -52,6 +52,7 @@ def test_pipeline(pipeline_params):
     index.populate_index(
         [(dataset, np.arange(dataset.shape[0]))],
         params["index_dir"],
+        True,
     )
     assert os.path.exists(params["index_dir"])
     assert os.path.exists(Path(params["index_dir"]) / f"block_0.index")

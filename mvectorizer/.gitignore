@@ -3,7 +3,7 @@ outputs
 
 # place for index placing after script execution
 
-data/
+data/gtzan
 index/
 best_models
 .pytest_cache
