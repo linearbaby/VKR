@@ -3,3 +3,5 @@ venv
 tmux_session.sh
 __pycache__
 __test.ipynb
+
+documentation
