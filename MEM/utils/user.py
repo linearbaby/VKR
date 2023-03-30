@@ -23,7 +23,7 @@ class SimpleUser:
 
         embedding += mul * emb / np.linalg.norm(emb)
         self.users[id]["amount"] += 1
-        self.users[id]["embedding"] = embedding
+        self.users[id]["embedding"] = embedding / np.linalg.norm(embedding)
 
     def get_user(self, id):
         return self.users[id]["embedding"]
