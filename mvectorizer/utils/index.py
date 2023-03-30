@@ -10,7 +10,7 @@ def train_index(data, d, index_dir, index_string):
     index_dir = Path(index_dir)
     index_dir.mkdir(parents=True, exist_ok=True)
 
-    index = faiss.index_factory(d, index_string)
+    index = faiss.index_factory(d, index_string, faiss.METRIC_INNER_PRODUCT)
     if not index.is_trained:
         index.train(data)
     assert index.is_trained
