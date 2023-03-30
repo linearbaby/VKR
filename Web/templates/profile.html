@@ -1,0 +1,34 @@
+<!-- templates/profile.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">
+  Welcome, {{ name }}!
+</h1>
+<h2>
+  Here you can listen to some music and get some recommendations <br>
+  Feel free to like and dislike songs and request new recommendations.
+</h2>
+
+<div id="playlist">
+  {% for song_info in songs_info %}
+  <div class="song" id="{{song_info['id']}}">
+    <audio controls>
+      <source src="/{{song_info['path']}}" type="audio/wav">
+    </audio>
+    <button onclick="update_user(true, {{song_info['id']}})">Like</button>
+    <button onclick="update_user(false, {{song_info['id']}})">Dislike</button>
+  </div>
+  {% endfor %}
+</div>
+<a href="{{ url_for('main.profile') }}" class="button">REFRESH</a>
+
+
+<script>
+  function update_user(reaction, song_id) {
+    fetch("/update-songs", { headers: { 'song-id': song_id, 'status': reaction }, method: "POST" });
+    return true;
+  }
+</script>
+{% endblock %}
