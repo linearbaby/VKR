@@ -103,6 +103,9 @@ def gen_embeddings(
         for data, music_ids in tqdm(em_dl):
             em, _ = data
             prop_embeddings = embed_model(em)
+            prop_embeddings = prop_embeddings / torch.linalg.norm(
+                prop_embeddings, dim=1
+            ).unsqueeze(-1)
             connector.insert_to_map(embed_map_name, music_ids, prop_embeddings)
 
     connector.save_map(embed_map_name)
