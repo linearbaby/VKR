@@ -6,22 +6,25 @@ def get_user_connector(type, hidden_size=512):
 
 
 class SimpleUser:
-    def __init__(self, hidden_size):
+    def __init__(self, hidden_size, momentum=0.9):
         self.hidden_size = hidden_size
         self.users = dict()
+        self.momentum = momentum
 
     def add_user(self, id):
-        self.users[id] = {"amount": 0, "embedding": np.zeros(self.hidden_size)}
+        rand_user = np.random.randn(self.hidden_size)
+        rand_user /= np.linalg.norm(rand_user)
+        self.users[id] = {"amount": 0, "embedding": rand_user}
 
     def update_user(self, id, emb, status: bool):
-        embedding = self.users[id]["amount"] * self.users[id]["embedding"]
+        embedding = self.momentum * self.users[id]["embedding"]
 
         # liked or disliked song
         mul = 1
         if not status:
             mul = -1
 
-        embedding += mul * emb / np.linalg.norm(emb)
+        embedding += mul * emb / np.linalg.norm(emb) * (1 - self.momentum)
         self.users[id]["amount"] += 1
         self.users[id]["embedding"] = embedding / np.linalg.norm(embedding)
 

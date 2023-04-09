@@ -7,13 +7,11 @@ from .user import get_user_connector
 
 
 class PredictableTemperature:
-    def __init__(
-        self, init_temp=5, decrease_coeff=500, end_temp=0.9, steps_before_plateu=10000
-    ):
+    def __init__(self, init_temp=5, decrease_coeff=50, end_temp=0.4):
         self.x = decrease_coeff // init_temp
         self.end_temp = end_temp
         self.decrease_coeff = decrease_coeff
-        self.steps_before_plateu = steps_before_plateu
+        self.steps_before_plateu = decrease_coeff * 6
 
     def get_update_temp(self, num_recomendations):
         if self.x > self.steps_before_plateu:
@@ -35,7 +33,7 @@ class RecommenderEngine:
         user_connector_type=None,
         default_temperature=5,
         temperature_descend=0.99,
-        enginge_type="predictable",  # stochastic / predictable
+        temperature_type="predictable",  # stochastic / predictable
     ):
         """
         if "stochastic", temperature sampling from normal distribution
@@ -44,9 +42,9 @@ class RecommenderEngine:
         user temperature to 0.9 with descend coefficent equal to 0.99
         """
         self.temperature_user = None
-        if enginge_type == "predictable":
+        if temperature_type == "predictable":
             self.temperature_user = defaultdict(PredictableTemperature)
-        if enginge_type == "stochastic":
+        if temperature_type == "stochastic":
             self.temperature_user = defaultdict(StochasticTemperature)
 
         self.index = faiss.read_index(str(index_path))
@@ -64,7 +62,7 @@ class RecommenderEngine:
             )
 
         user_embedding = self.user_connector.get_user(user_id)
-        recomendations, p_values = self.index.search(
+        p_values, recomendations = self.index.search(
             user_embedding[np.newaxis,],
             self.num_nearest,
         )
@@ -73,11 +71,14 @@ class RecommenderEngine:
         p_values = np.exp(p_values / temperature)
         p_values = p_values / p_values.sum()
 
-        recomendations = np.random.sample(
-            recomendations, size=num_recomendations, replace=False, p=p_values
+        recomendations = np.random.choice(
+            a=np.squeeze(recomendations),
+            size=(num_recomendations),
+            replace=False,
+            p=np.squeeze(p_values),
         )
 
-        return recomendations.to_list()
+        return recomendations.tolist()
 
     def update_user(self, user_id, song_emb, status):
         self.user_connector.update_user(user_id, song_emb, status)
