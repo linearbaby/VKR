@@ -29,7 +29,7 @@ def profile():
     response = requests.get(
         f"http://127.0.0.1:8000/user/{user_id}",
     )
-    music_ids = json.loads(response.content)["eval"][0]
+    music_ids = json.loads(response.content)["eval"]
     music_paths = music_connector.get_music_locations(music_ids)
     return render_template(
         "profile.html",
