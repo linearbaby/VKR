@@ -34,6 +34,13 @@ class EmbeddedGTZANDataset(Dataset):
         )
         self.X = torch.tensor(self.X)
 
+        # normalize dataset, because embeddings from vqvae
+        # induce bias in embedders and classifiers tending them
+        # to produce vectors differentiated not with cosine_similarity
+        # but with euclid
+        self.mean, self.std = self.X.mean(dim=0), self.X.std(dim=0)
+        self.X = (self.X - self.mean) / self.std
+
     def __getitem__(self, idx):
         return (self.X[idx], self.y[idx]), self.music_ids[idx]
 
