@@ -3,20 +3,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title">
+<!-- <h1 class="title">
   Welcome, {{ name }}!
-</h1>
+</h1> -->
 <div class="player">
   <div class="details">
-    <div class="now-playing">PLAYING x OF y</div>
+    <div class="genre">genre</div>
     <div class="track-art"></div>
     <div class="track-name">Track Name</div>
     <div class="track-artist">Track Artist</div>
   </div>
   <div class="buttons">
+    <div class="dislike" onclick="update_user(false)"><i class="fa fa-thumbs-down fa-2x"></i></div>
     <div class="prev-track" onclick="prevTrack()"><i class="fa fa-step-backward fa-2x"></i></div>
     <div class="playpause-track" onclick="playpauseTrack()"><i class="fa fa-play-circle fa-5x"></i></div>
     <div class="next-track" onclick="nextTrack()"><i class="fa fa-step-forward fa-2x"></i></div>
+    <div class="like" onclick="update_user(true)"><i class="fa fa-thumbs-up fa-2x"></i></div>
   </div>
   <div class="slider_container">
     <div class="current-time">00:00</div>
@@ -33,7 +35,7 @@
 <!-- Load the main script for the player -->
 
 <script>
-  let now_playing = document.querySelector(".now-playing");
+  let genre = document.querySelector(".genre");
   let track_art = document.querySelector(".track-art");
   let track_name = document.querySelector(".track-name");
   let track_artist = document.querySelector(".track-artist");
@@ -47,6 +49,22 @@
   let curr_time = document.querySelector(".current-time");
   let total_duration = document.querySelector(".total-duration");
 
+  let like = document.querySelector(".like");
+  let dislike = document.querySelector(".dislike");
+
+  let color_change = {
+    "metal": "ligthgreen",
+    "blues": "lightsalmon ",
+    "classical": "lightseagreen",
+    "country": "lightskyblue",
+    "disco": "lightslategray",
+    "hiphop": "lightyellow",
+    "jazz": "coral",
+    "pop": "mediumaquamarine",
+    "raggae": "palegreen",
+    "rock": "palevioletred",
+  };
+
   let track_index = 0;
   let isPlaying = false;
   let updateTimer;
@@ -55,39 +73,49 @@
   let curr_track = document.createElement('audio');
 
   // Define the tracks that have to be played
-  let track_list = [
-    {
-      name: "Night Owl",
-      artist: "Broke For Free",
-      image: "https://images.pexels.com/photos/2264753/pexels-photo-2264753.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=250&w=250",
-      path: "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/WFMU/Broke_For_Free/Directionless_EP/Broke_For_Free_-_01_-_Night_Owl.mp3"
-    },
-    {
-      name: "Enthusiast",
-      artist: "Tours",
-      image: "https://images.pexels.com/photos/3100835/pexels-photo-3100835.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=250&w=250",
-      path: "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Tours/Enthusiast/Tours_-_01_-_Enthusiast.mp3"
-    },
-    {
-      name: "Shipping Lanes",
-      artist: "Chad Crouch",
-      image: "https://images.pexels.com/photos/1717969/pexels-photo-1717969.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=250&w=250",
-      path: "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Chad_Crouch/Arps/Chad_Crouch_-_Shipping_Lanes.mp3",
-    },
-  ];
+  let track_list = []
+  {% for music in songs_info %}
+  track_list.push({
+    name: "{{music['music_name']}}",
+    artist: "{{music['author']}}",
+    image: "https://picsum.photos/400?random=" + "{{music['id']}}",
+    path: "{{music['path']}}",
+    id: "{{music['id']}}",
+    genre: "{{music['genre']}}",
+  })
+  {% endfor %}
 
-  function random_bg_color() {
+
+  function random_bg_color(genre) {
 
     // Get a number between 64 to 256 (for getting lighter colors)
-    let red = Math.floor(Math.random() * 256) + 64;
-    let green = Math.floor(Math.random() * 256) + 64;
-    let blue = Math.floor(Math.random() * 256) + 64;
+    // let red = Math.floor(Math.random() * 256) + 64;
+    // let green = Math.floor(Math.random() * 256) + 64;
+    // let blue = Math.floor(Math.random() * 256) + 64;
 
-    // Construct a color withe the given values
-    let bgColor = "rgb(" + red + "," + green + "," + blue + ")";
+    // // Construct a color withe the given values
+    // let bgColor = "rgb(" + red + "," + green + "," + blue + ")";
 
     // Set the background to that color
-    document.body.style.background = bgColor;
+    const divs = document.getElementsByTagName("div");
+    for (div of divs) {
+      div.style.backgroundColor = color_change[genre];
+    }
+  }
+  function loadLikes(track) {
+    if ("status" in track) {
+      if (track["status"]) {
+        like.style.opacity = 1;
+        dislike.style.opacity = 0.5;
+      } else {
+        dislike.style.opacity = 1;
+        like.style.opacity = 0.5;
+      }
+    }
+    else {
+      dislike.style.opacity = 0.5;
+      like.style.opacity = 0.5;
+    }
   }
 
   function loadTrack(track_index) {
@@ -98,12 +126,14 @@
 
     track_art.style.backgroundImage = "url(" + track_list[track_index].image + ")";
     track_name.textContent = track_list[track_index].name;
+    track_name.id = parseInt(track_list[track_index].id)
     track_artist.textContent = track_list[track_index].artist;
-    now_playing.textContent = "PLAYING " + (track_index + 1) + " OF " + track_list.length;
+    genre.textContent = track_list[track_index].genre;
+    loadLikes(track_list[track_index])
 
     updateTimer = setInterval(seekUpdate, 1000);
     curr_track.addEventListener("ended", nextTrack);
-    random_bg_color();
+    random_bg_color(track_list[track_index].genre);
   }
 
   function resetValues() {
@@ -132,10 +162,22 @@
     playpause_btn.innerHTML = '<i class="fa fa-play-circle fa-5x"></i>';;
   }
 
-  function nextTrack() {
-    if (track_index < track_list.length - 1)
-      track_index += 1;
-    else track_index = 0;
+  async function nextTrack() {
+    if (track_index == track_list.length - 1) {
+      const response = await fetch("/renew-recommendations", { method: "GET" });
+      const next_tracks = await response.json();
+      for (var i = 0; i < next_tracks.length; i++) {
+        track_list.push({
+          name: next_tracks[i]["music_name"],
+          artist: next_tracks[i]["author"],
+          image: "https://picsum.photos/400?id=" + next_tracks[i]["id"],
+          path: next_tracks[i]["path"],
+          id: next_tracks[i]["id"],
+          genre: next_tracks[i]["genre"]
+        });
+      }
+    }
+    track_index += 1;
     loadTrack(track_index);
     playTrack();
   }
@@ -143,7 +185,7 @@
   function prevTrack() {
     if (track_index > 0)
       track_index -= 1;
-    else track_index = track_list.length;
+    else track_index = track_list.length - 1;
     loadTrack(track_index);
     playTrack();
   }
@@ -180,7 +222,19 @@
     }
   }
 
-  function update_user(reaction, song_id) {
+  function update_user(reaction) {
+    song_id = track_name.id;
+    if (reaction) {
+      like.style.opacity = 1;
+      dislike.style.opacity = 0.5;
+      track_list[track_index]["status"] = true;
+    }
+    else {
+      dislike.style.opacity = 1;
+      like.style.opacity = 0.5;
+      track_list[track_index]["status"] = false;
+    }
+
     fetch("/update-songs", { headers: { 'song-id': song_id, 'status': reaction }, method: "POST" });
     return true;
   }

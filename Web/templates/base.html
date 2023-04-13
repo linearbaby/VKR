@@ -9,8 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Flask Auth Example</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
     <style>
-        body {
+        div {
             background-color: lightgreen;
 
             /* Smoothly transition the background color */
@@ -42,8 +43,8 @@
             border-radius: 15%;
         }
 
-        .now-playing {
-            font-size: 1rem;
+        .genre {
+            font-size: 2rem;
         }
 
         .track-name {
@@ -62,17 +63,18 @@
 
         .playpause-track,
         .prev-track,
-        .next-track {
+        .next-track,
+        .dislike,
+        .like {
             padding: 25px;
             opacity: 0.8;
-
-            /* Smoothly transition the opacity */
-            transition: opacity .2s;
         }
 
         .playpause-track:hover,
         .prev-track:hover,
-        .next-track:hover {
+        .next-track:hover,
+        .dislike:hover,
+        .like:hover {
             opacity: 1.0;
         }
 
@@ -136,7 +138,9 @@
         i.fa-play-circle,
         i.fa-pause-circle,
         i.fa-step-forward,
-        i.fa-step-backward {
+        i.fa-step-backward,
+        i.fa-thumbs-down,
+        i.fa-thumbs-up {
             cursor: pointer;
         }
     </style>

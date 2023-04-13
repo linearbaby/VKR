@@ -1,10 +1,12 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify
+import json
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 import requests
 
 from .models import User
-from . import db
+from . import music_connector
+
 
 songs = Blueprint("songs", __name__)
 
@@ -29,5 +31,7 @@ def renew_recommendations():
     response = requests.get(
         f"http://127.0.0.1:8000/user/{user_id}",
     )
+    music_ids = json.loads(response.content)["eval"]
+    music_info = music_connector.get_music_info(music_ids)
 
-    return response
+    return jsonify(music_info)

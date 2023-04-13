@@ -7,6 +7,16 @@ from flask_login import LoginManager
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
 
+from .utils.music_connector import get_music_connector
+
+music_connector = get_music_connector(
+    "LocalDisk",
+    {
+        "music_info_path": "/home/artem/grad/mvectorizer/data/gtzan/music_info.csv",
+        "music_location": "/home/artem/grad/mvectorizer/data/gtzan/samples",
+    },
+)
+
 
 def create_app():
     app = Flask(
