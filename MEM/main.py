@@ -7,7 +7,7 @@ from fastapi import FastAPI, Header
 app = FastAPI()
 
 recommender_model = model.aquire_model(
-    "/home/artem/grad/mvectorizer/index/2023-03-19/populated.index"
+    "/home/artem/grad/mvectorizer/index/2023-04-10/populated.index"
 )
 con = SimpleDFConnector(
     data_path="/home/artem/grad/mvectorizer/data/gtzan",

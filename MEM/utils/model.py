@@ -49,7 +49,7 @@ class RecommenderEngine:
 
         self.index = faiss.read_index(str(index_path))
         self.index.nprobe = index_nprobe
-        self.num_nearest = 500
+        self.num_nearest = 100
         self.default_temperature = default_temperature
         self.temperature_descend = temperature_descend
 
