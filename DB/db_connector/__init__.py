@@ -1,1 +1,1 @@
-from .src.connector import SimpleDFConnector
+from .src.simple_df_connector import SimpleDFConnector

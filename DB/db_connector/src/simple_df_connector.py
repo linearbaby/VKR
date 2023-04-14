@@ -1,21 +1,9 @@
 import pandas as pd
-from torch.utils.data import Dataset
 import numpy as np
 import librosa as ls
 from pathlib import Path
 
-
-class CallbackDataset(Dataset):
-    def __init__(self, getitem_callback, len):
-        super().__init__()
-        self.len = len
-        self.getitem_callback = getitem_callback
-
-    def __getitem__(self, idx):
-        return self.getitem_callback(idx)
-
-    def __len__(self):
-        return self.len
+from .callback_dataset import CallbackDataset
 
 
 class SimpleDFConnector:
