@@ -1,1 +1,1 @@
-from .src.simple_df_connector import SimpleDFConnector
+from .src.connector_factory import music_connector_factory
