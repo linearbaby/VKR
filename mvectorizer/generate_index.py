@@ -1,20 +1,22 @@
 import numpy as np
 import torch
-from utils import index, connector
+from utils import index
 from sys import getsizeof
 import gc
 from itertools import islice
 import hydra
 from omegaconf import DictConfig, OmegaConf
+from db_connector import music_connector_factory
 
 
 @hydra.main(version_base=None, config_path="conf", config_name="index")
 def generate_index(cfg: DictConfig):
     # get training data with memory constraints
-    cr = connector.SimpleDFConnector(
-        data_path=cfg.connector.meta_path,
-        music_info_df_name=cfg.connector.music_info_df_name,
-        music_location=cfg.connector.music_location,
+    # prepare config
+    connector_config = OmegaConf.to_container(cfg.connector, resolve=True)
+    connector_config.pop("emb_map_name")
+    cr = music_connector_factory(
+        **connector_config,
     )
     cr.load_map(cfg.connector.emb_map_name)
     emb_dataset = cr.get_embeddings_dataset(cfg.connector.emb_map_name)
@@ -61,9 +63,7 @@ def generate_index(cfg: DictConfig):
     print(cr._get_embedding(cfg.connector.emb_map_name, 0))
     q = index.FAISS(cfg.index_dir)
     query = q.execute_query(
-        cr._get_embedding(cfg.connector.emb_map_name, 0)[
-            np.newaxis,
-        ],
+        cr._get_embedding(cfg.connector.emb_map_name, 0)[np.newaxis,],
         1,
         1,
     )

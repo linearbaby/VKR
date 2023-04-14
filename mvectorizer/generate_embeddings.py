@@ -1,7 +1,9 @@
 from utils.embeddings.models import ShallowClassifier, EmbedMusic
 from utils.embeddings.train_eval import train, gen_embeddings
 from utils.embeddings.dataset import EmbeddedGTZANDataset
-from utils.connector import SimpleDFConnector
+
+# from utils.connector import SimpleDFConnector
+from db_connector import music_connector_factory
 import torch
 import hydra
 from omegaconf import DictConfig, OmegaConf
@@ -51,10 +53,12 @@ def generate(cfg: DictConfig) -> None:
     # time to generate embeddings using connector
     embed_model = EmbedMusic(cfg.model["input_dim"], cfg.model["embed_dim"])
     embed_model.load_state_dict(torch.load(artifacts_load_path / "embed.pkl"))
-    con = SimpleDFConnector(
-        data_path=cfg.connector["meta_path"],
-        music_info_df_name=cfg.connector["music_info_df_name"],
-        music_location=cfg.connector["music_location"],
+
+    # prepare config
+    connector_config = OmegaConf.to_container(cfg.connector, resolve=True)
+    connector_config.pop("emb_map_name")
+    con = music_connector_factory(
+        **connector_config,
     )
 
     print("generating embeddings")

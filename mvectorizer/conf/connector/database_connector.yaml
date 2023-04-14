@@ -1,0 +1,4 @@
+music_location: /home/artem/grad/mvectorizer/data/gtzan/samples
+dbapi_uri: "mysql+pymysql://root:password@127.0.0.1:3306/flask"
+emb_map_name: "embeddings"
+type: DB
