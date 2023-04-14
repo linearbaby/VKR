@@ -10,11 +10,9 @@ db = SQLAlchemy()
 from .utils.music_connector import get_music_connector
 
 music_connector = get_music_connector(
-    "LocalDisk",
-    {
-        "music_info_path": "/home/artem/grad/mvectorizer/data/gtzan/music_info.csv",
-        "music_location": "/home/artem/grad/mvectorizer/data/gtzan/samples",
-    },
+    "DB",
+    cri="mysql+pymysql://root:password@127.0.0.1:3306/flask",
+    music_location="/home/artem/grad/mvectorizer/data/gtzan/samples",
 )
 
 
@@ -27,7 +25,9 @@ def create_app():
     )
 
     app.config["SECRET_KEY"] = "9OLWxND4o83j4K4iuopO"
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
+    app.config[
+        "SQLALCHEMY_DATABASE_URI"
+    ] = "mysql+pymysql://root:password@127.0.0.1:3306/flask"
 
     db.init_app(app)
 
