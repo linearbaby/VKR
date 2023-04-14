@@ -29,8 +29,8 @@ class RecommenderEngine:
     def __init__(
         self,
         index_path,
+        user_connector,  # dict of parameters to get_user_connector
         index_nprobe=4,
-        user_connector_type=None,
         default_temperature=5,
         temperature_descend=0.99,
         temperature_type="predictable",  # stochastic / predictable
@@ -53,7 +53,7 @@ class RecommenderEngine:
         self.default_temperature = default_temperature
         self.temperature_descend = temperature_descend
 
-        self.user_connector = get_user_connector(type=user_connector_type)
+        self.user_connector = get_user_connector(**user_connector)
 
     def get_recommendations(self, user_id, temperature=None, num_recomendations=5):
         if not temperature:
@@ -87,6 +87,6 @@ class RecommenderEngine:
         self.user_connector.add_user(user_id)
 
 
-def aquire_model(model_path):
-    model = RecommenderEngine(str(model_path))
+def aquire_model(**model_params):
+    model = RecommenderEngine(**model_params)
     return model
