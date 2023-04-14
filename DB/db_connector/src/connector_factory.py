@@ -2,7 +2,7 @@ from .simple_df_connector import SimpleDFConnector
 from .database_connector import DatabaseConnector
 
 
-def music_connector_factory(type, kwargs):
+def music_connector_factory(type, **kwargs):
     """
     type = ["DB", "DF"]
     kwargs - dict for chosen type of connector
