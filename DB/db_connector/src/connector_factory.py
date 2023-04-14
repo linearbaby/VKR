@@ -18,7 +18,7 @@ def music_connector_factory(type, **kwargs):
     """
     if type == "DB":
         return DatabaseConnector(**kwargs)
-    if type == "DB":
+    if type == "DF":
         return SimpleDFConnector(**kwargs)
     else:
         return None
