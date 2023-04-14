@@ -14,15 +14,7 @@ class Base(DeclarativeBase):
 class UserMEM(Base):
     __tablename__ = "user_embeddings"
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id_fk: Mapped[int] = mapped_column(ForeignKey("user_account.id"))
     embedding: Mapped[str] = mapped_column(String(12000))
-
-
-class UserWEB(Base):
-    __tablename__ = "user_account"
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(30))
-    fullname: Mapped[Optional[str]] = mapped_column(String(30))
 
 
 class MusicInfo(Base):
