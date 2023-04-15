@@ -12,14 +12,15 @@ from .models import *
 
 
 class DatabaseConnector:
-    def __init__(self, music_location, dbapi_uri):
+    def __init__(self, music_location, dbapi_uri, echo=False):
         """
         music_location - path to all audio files
         dbapi_uri - uri for connection to mysql db
         of type: "mysql+pymysql://root:password@127.0.0.1:3306/flask"
+        echo - log every transaction [True, False]
         """
         super().__init__()
-        self.engine = create_engine(dbapi_uri, echo=True)
+        self.engine = create_engine(dbapi_uri, echo=echo)
         self.session = Session(self.engine)
         self.music_location = Path(music_location)
 

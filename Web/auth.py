@@ -1,9 +1,8 @@
-# auth.py
-
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required
 import requests
+import os
 
 from .models import User
 from . import db
@@ -44,7 +43,6 @@ def signup():
 
 @auth.route("/signup", methods=["POST"])
 def signup_post():
-
     email = request.form.get("email")
     name = request.form.get("name")
     password = request.form.get("password")
@@ -74,7 +72,7 @@ def signup_post():
     user_id = User.query.filter_by(email=email).first()
     user_id = user_id.id
     requests.put(
-        f"http://127.0.0.1:8000/user/{user_id}",
+        f"http://{os.getenv('GRAD_MEM_HOST', '127.0.0.1')}:8000/user/{user_id}",
     )
 
     return redirect(url_for("auth.login"))

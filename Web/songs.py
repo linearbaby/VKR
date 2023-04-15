@@ -3,6 +3,7 @@ import json
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 import requests
+import os
 
 from .models import User
 from . import music_connector
@@ -19,7 +20,7 @@ def update_songs():
 
     user_id = current_user.id
     response = requests.post(
-        f"http://127.0.0.1:8000/user/{user_id}",
+        f"http://{os.getenv('GRAD_MEM_HOST', '127.0.0.1')}:8000/user/{user_id}",
         headers={"song-id": song_id, "status": status},
     )
     return ""
@@ -29,7 +30,7 @@ def update_songs():
 def renew_recommendations():
     user_id = current_user.id
     response = requests.get(
-        f"http://127.0.0.1:8000/user/{user_id}",
+        f"http://{os.getenv('GRAD_MEM_HOST', '127.0.0.1')}:8000/user/{user_id}",
     )
     music_ids = json.loads(response.content)["eval"]
     music_info = music_connector.get_music_info(music_ids)

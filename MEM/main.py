@@ -1,7 +1,9 @@
 from utils import model
 from db_connector import music_connector_factory
+from db_connector import create_cri
 
 from fastapi import FastAPI, Header
+import os
 
 
 app = FastAPI()
@@ -9,17 +11,22 @@ app = FastAPI()
 recommender_model = model.aquire_model(
     user_connector={
         "type": "DB",
-        "cri": "mysql+pymysql://root:password@127.0.0.1:3306/flask",
+        "cri": create_cri(),
         "hidden_size": 512,
         "momentum": 0.9,
     },
-    index_path="/home/artem/grad/mvectorizer/index/2023-04-10/populated.index",
+    index_path=os.getenv(
+        "GRAD_INDEX_PATH",
+        "/home/artem/grad/mvectorizer/index/2023-04-10/populated.index",
+    ),
 )
 
 con = music_connector_factory(
     type="DB",
-    dbapi_uri="mysql+pymysql://root:password@127.0.0.1:3306/flask",
-    music_location="/home/artem/grad/mvectorizer/data/gtzan/samples",
+    dbapi_uri=create_cri(),
+    music_location=os.getenv(
+        "GRAD_MUSIC_LOCATION", "/home/artem/grad/mvectorizer/data/gtzan/samples"
+    ),
 )
 
 emb_map_name = "embeddings"

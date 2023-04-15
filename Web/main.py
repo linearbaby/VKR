@@ -2,6 +2,8 @@ from flask import Blueprint, render_template
 from flask_login import login_required, current_user
 import requests
 import json
+import os
+
 from . import music_connector
 
 
@@ -18,7 +20,7 @@ def index():
 def profile():
     user_id = current_user.id
     response = requests.get(
-        f"http://127.0.0.1:8000/user/{user_id}",
+        f"http://{os.getenv('GRAD_MEM_HOST', '127.0.0.1')}:8000/user/{user_id}",
     )
     music_ids = json.loads(response.content)["eval"]
     music_info = music_connector.get_music_info(music_ids)

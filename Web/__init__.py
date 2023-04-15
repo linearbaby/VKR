@@ -1,8 +1,9 @@
-# init.py
-
+from db_connector import create_cri
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+
+import os
 
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
@@ -11,8 +12,10 @@ from .utils.music_connector import get_music_connector
 
 music_connector = get_music_connector(
     "DB",
-    cri="mysql+pymysql://root:password@127.0.0.1:3306/flask",
-    music_location="/home/artem/grad/mvectorizer/data/gtzan/samples",
+    cri=create_cri(),
+    music_location=os.getenv(
+        "GRAD_MUSIC_LOCATION", "/home/artem/grad/mvectorizer/data/gtzan/samples"
+    ),
 )
 
 
@@ -20,14 +23,14 @@ def create_app():
     app = Flask(
         __name__,
         static_url_path="",
-        static_folder="/home/artem/grad/mvectorizer/data/gtzan/samples",
+        static_folder=os.getenv(
+            "GRAD_MUSIC_LOCATION", "/home/artem/grad/mvectorizer/data/gtzan/samples"
+        ),
         template_folder="templates",
     )
 
     app.config["SECRET_KEY"] = "9OLWxND4o83j4K4iuopO"
-    app.config[
-        "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://root:password@127.0.0.1:3306/flask"
+    app.config["SQLALCHEMY_DATABASE_URI"] = create_cri()
 
     db.init_app(app)
 

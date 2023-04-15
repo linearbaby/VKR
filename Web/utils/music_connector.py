@@ -18,8 +18,8 @@ def get_music_connector(type, **config):
 
 
 class DBMusicConnector:
-    def __init__(self, cri, music_location):
-        self.engine = create_engine(cri, echo=True)
+    def __init__(self, cri, music_location, echo=False):
+        self.engine = create_engine(cri, echo=echo)
         self.session = Session(self.engine)
 
         self.music_location = Path(music_location)

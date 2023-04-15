@@ -23,8 +23,8 @@ def get_user_connector(type, **kwargs):
 
 
 class DBUser:
-    def __init__(self, cri, hidden_size, momentum=0.9):
-        self.engine = create_engine(cri, echo=True)
+    def __init__(self, cri, hidden_size, momentum=0.9, echo=False):
+        self.engine = create_engine(cri, echo=echo)
         self.session = Session(self.engine)
         Base.metadata.create_all(self.engine)
 

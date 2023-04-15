@@ -1,0 +1,56 @@
+services:
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: flask
+    volumes:
+      - ./init_db:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 10s
+      retries: 10
+
+  mem:
+    build:
+      context: ./
+      dockerfile: ./MEM/Dockerfile
+    ports:
+      - "8000"
+    volumes:
+      - ./mvectorizer/data/gtzan:/data:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - GRAD_INDEX_PATH=/index/populated.index
+      - GRAD_MUSIC_LOCATION=/data/samples
+      - GRAD_DBAPI=mysql+pymysql
+      - GRAD_USER=root
+      - GRAD_PASSWORD=password
+      - GRAD_HOST=db
+      - GRAD_PORT=3306
+      - GRAD_DB_NAME=flask
+
+  web:
+    build:
+      context: ./
+      dockerfile: ./Web/Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./mvectorizer/data/gtzan/samples:/data:ro
+    environment:
+      - GRAD_MEM_HOST=mem
+      - GRAD_MUSIC_LOCATION=/data
+      - GRAD_DBAPI=mysql+pymysql
+      - GRAD_USER=root
+      - GRAD_PASSWORD=password
+      - GRAD_HOST=db
+      - GRAD_PORT=3306
+      - GRAD_DB_NAME=flask
