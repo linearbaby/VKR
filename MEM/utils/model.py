@@ -24,12 +24,19 @@ class PredictableTemperature:
         pass
         # return decrease_coeff / x + end_temp
 
-    def get_update_temp(self, num_recomendations):
+    # def get_update_temp(self, num_recomendations):
+    #     if self.x > self.steps_before_plateu:
+    #         return self.end_temp
+
+    #     return self.calc_temp_tanh()
+
+    def get_temp(self):
         if self.x > self.steps_before_plateu:
             return self.end_temp
-
-        self.x += num_recomendations
         return self.calc_temp_tanh()
+
+    def update_temp(self, num):
+        self.x += num
 
 
 class StochasticTemperature:
@@ -75,9 +82,7 @@ class RecommenderEngine:
 
     def get_recommendations(self, user_id, temperature=None, num_recomendations=5):
         if not temperature:
-            temperature = self.temperature_user[user_id].get_update_temp(
-                num_recomendations
-            )
+            temperature = self.temperature_user[user_id].get_temp()
 
         user_embedding = self.user_connector.get_user(user_id)
         p_values, recomendations = self.index.search(
@@ -100,6 +105,7 @@ class RecommenderEngine:
 
     def update_user(self, user_id, song_emb, status):
         self.user_connector.update_user(user_id, song_emb, status)
+        self.temperature_user[user_id].update_temp(1)
 
     def add_user(self, user_id):
         self.user_connector.add_user(user_id)
