@@ -58,7 +58,7 @@
     "classical": "#6A5ACD",
     "country": "#2E8B57",
     "disco": "#FF00FF",
-    "hiphop": "#483D8B",
+    "hiphop": "#вщ",
     "jazz": "#FFA500",
     "pop": "#FF69B4",
     "reggae": "#B22288",
@@ -78,7 +78,7 @@
   track_list.push({
     name: "{{music['music_name']}}",
     artist: "{{music['author']}}",
-    image: "https://picsum.photos/400?random=" + "{{music['id']}}",
+    image: "https://source.unsplash.com/random/?film&" + "{{music['id']}}",
     path: "{{music['path']}}",
     id: "{{music['id']}}",
     genre: "{{music['genre']}}",
@@ -170,7 +170,7 @@
         track_list.push({
           name: next_tracks[i]["music_name"],
           artist: next_tracks[i]["author"],
-          image: "https://picsum.photos/400?id=" + next_tracks[i]["id"],
+          image: "https://source.unsplash.com/random/?film&" + next_tracks[i]["id"],
           path: next_tracks[i]["path"],
           id: next_tracks[i]["id"],
           genre: next_tracks[i]["genre"]
