@@ -7,7 +7,7 @@ from .user import get_user_connector
 
 
 class PredictableTemperature:
-    def __init__(self, init_temp=5, flatness_factor=4, bias=2, end_temp=0.5):
+    def __init__(self, init_temp=5, flatness_factor=4, bias=2, end_temp=0.2):
         self.x = 0
         self.init_temp = init_temp
         self.end_temp = end_temp
